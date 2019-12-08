@@ -1,0 +1,3567 @@
+﻿---
+swagger: '2.0'
+info:
+  version: 2.0.0 - 2018-05-30
+  title: 烽火华校V2 互动系统API
+  
+tags:
+  - name: Common
+    description: 通用
+  - name: Mobile
+    description: Android和ios
+  - name: Moment
+    description: 圈子
+  - name: Contacts
+    description: 通讯录
+  - name: Notification
+    description: 通知
+    
+paths:
+
+  /user_center/api/login:
+    post:
+      tags:
+        - Common
+      description: 登录 - 本地登录
+      summary: 登录 - 本地登录
+      parameters:
+        - name: username 
+          in: formData
+          description: 用户名
+          type: string
+          required: true
+        - name: password
+          in: formData
+          description: 密码
+          format: password
+          type: string
+          required: true          
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+
+              
+  /user_center/api/change/user_type:
+    post:
+      tags:
+        - Common
+      description: 切换用户类型
+      summary: 切换用户类型
+      parameters:
+        - name: school_id 
+          in: formData
+          description: 新类型的学校编号
+          type: string
+          required: true
+        - name: type_id 
+          in: formData
+          description: 新类型的类型编号
+          type: string
+          required: true          
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            $ref: '#/definitions/result'  
+
+
+  /user_center/api/list/user_type:
+    post:
+      tags:
+        - Common
+      description: 枚举用户类型
+      summary: 枚举用户类型
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    account_id:
+                      type: string
+                      description: 账号ID                  
+                    type_id:
+                      type: string
+                      description: 用户类型ID
+                    type_name:
+                      type: string
+                      description: 用户类型名称
+                    school_id:
+                      type: string
+                      description: 学校ID   
+                    school_name:
+                      type: string
+                      description: 学校名称 
+                    full_name:
+                      type: string
+                      description: 当前类型的用户名                       
+                    id:
+                      type: string
+                      description: 学生ID/教师ID/家长ID
+                    image_url:
+                      type: string
+                      description: 头像         
+                      
+                      
+  /user_center/api/reset/password:
+    post:
+      tags:
+        - Common
+      description: 修改密码 (登录后可用)
+      summary: 修改密码 (登录后可用)
+      parameters:
+        - name: old_password 
+          in: formData
+          description: 原密码
+          format: password
+          type: string
+          required: true
+        - name: new_password 
+          in: formData
+          description: 新密码
+          format: password
+          type: string
+          required: true          
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            $ref: '#/definitions/result'
+
+
+  /user_center/api/upload/image:
+    post:
+      tags:
+      - Common
+      description: 上传用户头像图片
+      summary: 上传用户头像图片
+      parameters:
+        - name: image
+          in: formData
+          description: 图片
+          required: true
+          type: file
+      responses:
+        200:
+          description: 返回结果，image_id放在返回的Data中
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    url:
+                      type: string
+
+
+  /user_center/api/update/student:
+    post:
+      tags:
+      - Common
+      description: 更新学生基本信息
+      summary: 更新学生基本信息
+      parameters:
+        - name: account_id
+          in: formData
+          description: 帐号ID，自己修改自己的信息需要提供该信息
+          type: string
+          required: False
+        - name: student_info
+          in: formData
+          description: 用户信息 格式参见student_info，ID为必填
+          type: string
+          required: true
+      responses:
+        200:
+          description: 返回结果
+          schema:
+            $ref: '#/definitions/result'
+
+
+  /user_center/api/update/teacher:
+    post:
+      tags:
+      - Common
+      description: 更新教师基本信息
+      summary: 更新教师基本信息
+      parameters:
+        - name: account_id
+          in: formData
+          description: 帐号ID，自己修改自己的信息需要提供该信息
+          type: string
+          required: False
+        - name: teacher_info
+          in: formData
+          description: 用户信息 格式参见teacher_info，ID为必填
+          type: string
+          required: true
+      responses:
+        200:
+          description: 返回结果
+          schema:
+            $ref: '#/definitions/result'
+
+
+  /user_center/api/update/parent:
+    post:
+      tags:
+      - Common
+      description: 更新家长信息
+      summary: 更新家长基本信息
+      parameters:
+        - name: account_id
+          in: formData
+          description: 帐号ID
+          type: string
+          required: False
+        - name: parent_info
+          in: formData
+          description: 用户信息 parent_info，ID为必填
+          type: string
+          required: true
+      responses:
+        200:
+          schema:
+            $ref: '#/definitions/result'
+
+
+  /api/mobile/service/list:
+    post:
+      tags:
+        - Mobile
+      description: 获取当前登录用户可用服务
+      summary: 获取当前登录用户可用服务
+      parameters:
+        - name: mobile_type 
+          in: formData
+          description: 移动端类型(1,2,4,8)
+          type: string
+          required: true
+      responses:
+        "200":
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: array
+                items:
+                  type: object
+                  description: 服务列表
+                  properties:
+                    service_code:
+                      type: string
+                      description: 服务标识
+                    service_domain:
+                      type: string
+                      description: 服务地址
+                    login_url:
+                      type: string
+                      description: 登录地址
+                    logout_url:
+                      type: string
+                      description: 登出地址
+                    service_is_heartbeat:
+                      type: string
+                      description: 服务是否需要心跳               
+                    service_heartbeat_url:
+                      type: string
+                      description: 服务心跳地址
+                    service_hearbeat_interval:
+                      type: string
+                      description: 服务心跳发送周期(秒)
+                    para:
+                      type: string
+                      description: 服务特殊参数(json)
+
+
+  /api/mobile/version:
+    post:
+      tags:
+        - Mobile
+      description: 获取移动端最新版本
+      summary: 获取移动端最新版本
+      parameters:
+        - name: mobile_type 
+          in: formData
+          description: 移动端类型
+          type: string
+          required: true
+      responses:
+        "200":
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  latest_version:
+                    type: string
+                    description: 最新版本
+                  latest_version_url:
+                    type: string
+                    description: 最新版本下载地址
+                  latest_version_checksum:
+                    type: string
+                    description: 安装包校验
+                  support_version:
+                    type: string
+                    description: 服务器支持的最低版本
+                  version_info:
+                    type: string
+                    description: 最新版本更新信息
+
+
+  /api/mobile/update:
+    post:
+      tags:
+        - Mobile
+      description: 更新移动端版本 - 仅供android和ios管理员更新版本时使用
+      summary: 更新移动端版本 - 仅供android和ios管理员更新版本时使用
+      parameters:
+        - name: username
+          in: formData
+          description: 管理员用户名
+          type: string
+          required: true
+        - name: password
+          in: formData
+          description: 管理员密码
+          format: password
+          type: string
+          required: true
+        - name: mobile_type
+          in: formData
+          description: 类型 1:苹果手机 2:苹果平板 4:安卓手机 8:安卓平板
+          type: string
+          required: true
+        - name: latest_version
+          in: formData
+          description: 最新版本号
+          type: string
+          required: true
+        - name: version_info
+          in: formData
+          description: 版本信息
+          type: string
+          required: false
+        - name: latest_pkg
+          in: formData
+          description: 安装包 - apk文件, 仅Android需要上传
+          type: file
+          required: false
+      responses:
+        "200":
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  latest_version:
+                    type: string
+                    description: 最新版本号
+                  latest_version_url:
+                    type: string
+                    description: 安装包路径
+
+
+  /api/mobile/qrcode/info:
+    get:
+      tags:
+        - Mobile
+      description: 获取移动端app下载二维码图片
+      summary: 获取移动端app下载二维码图片
+      responses:
+        "200":
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  qrcode:
+                    type: string
+                    description: 二维码图片
+
+
+  /api/mobile/heartbeat:
+    post:
+      tags:
+        - Mobile
+      description: 移动端保持登录心跳消息
+      summary: 移动端保持登录心跳消息
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/result'                    
+
+
+  /api/mobile/smscode/send:
+    get:
+      tags:
+        - Mobile
+      description: 发送短信验证码（频率限制：后台24小时5次）
+      summary: 发送短信验证码
+      parameters:
+        - name: mobile
+          in: query
+          description: 手机号
+          type: string
+          required: true
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            $ref: '#/definitions/result'
+
+
+  /api/mobile/smscode/verify:
+    post:
+      tags:
+        - Mobile
+      description: 校验短信验证码（频率限制：后台1分钟5次）
+      summary: 校验短信验证码
+      parameters:
+        - name: mobile
+          in: formData
+          description: 手机号
+          type: string
+          required: true
+        - name: smscode
+          in: formData
+          description: 短信验证码
+          type: string
+          required: true
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            $ref: '#/definitions/result'
+
+
+  /api/mobile/passwd/forget/reset:
+    post:
+      tags:
+        - Mobile
+      description: 用户忘记密码后找回密码 （用户中心远程调用）
+      summary: 用户忘记密码后找回密码 （用户中心远程调用）
+      parameters:
+        - name: mobile
+          in: formData
+          description: 手机号
+          type: string
+          required: true
+        - name: smscode
+          in: formData
+          description: 短信验证码
+          type: string
+          required: true
+        - name: new_passwd
+          in: formData
+          description: 新的密码
+          format: password
+          type: formData
+          required: true
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/result'
+
+
+  /api/mobile/passwd/retrieve:
+    post:
+      tags:
+        - Mobile
+      description: 获取密码  （用户中心远程调用）
+      summary: 获取密码  （用户中心远程调用）
+      parameters:
+        - name: mobile
+          in: formData
+          description: 手机号
+          type: string
+          required: true
+        - name: smscode
+          in: formData
+          description: 短信验证码
+          type: string
+          required: true
+      responses:
+        "200":
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  password:
+                    type: string
+                    description: 密码
+
+
+  /api/common/logout:
+    post:
+      tags:
+        - Common
+      description: 登出
+      summary: 登出
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/result'
+
+
+  /api/common/user/verify:
+    get:
+      tags:
+        - Common
+      description: 验证用户是否已经登录
+      summary: 验证用户是否已经登录
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/result'
+
+  
+  /api/common/user/info:
+    post:
+      tags:
+        - Common
+      description: 获取某位用户基本信息（不传参数则查询自身信息）
+      summary: 获取某位用户基本信息
+      parameters:
+        - name: account_id 
+          in: formData
+          description: 用户账号ID
+          type: string
+          required: false
+        - name: user_type_id
+          in: formData
+          description: 用户类型ID
+          type: string
+          required: false
+        - name: school_id
+          in: formData
+          description: 学校ID
+          type: string
+          required: false            
+      responses:
+        "200":
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: 用户姓名
+                  account_id:
+                    type: string
+                    description: 用户账号ID                    
+                  user_type_id:
+                    type: string
+                    description: 用户类型ID
+                  role_id:
+                    type: string
+                    description: 角色ID（老师:teacher.id 学生:student.id 家长:parent.id）
+                  phone:
+                    type: string
+                    description: 手机号                   
+                  avatar:
+                    type: string
+                    description: 用户头像URL   
+                  sex:
+                    type: string
+                    description: 用户性别
+                  is_privileged:
+                    type: string
+                    description: 是否有权限使用本系统
+                  is_privileged_desc:
+                    type: string
+                    description: 无权使用的原因 (不在校或孩子离校)
+                  school:
+                    type: object
+                    properties:
+                      school_id:
+                        type: string
+                        description: 学校ID
+                      school_name:
+                        type: string
+                        description: 学校名称
+                  clazz:
+                    type: array
+                    description: 所在班级
+                    items:
+                      type: object
+                      properties:
+                        class_id:
+                          type: string
+                          description: 班级ID
+                        class_name:
+                          type: string
+                          description: 班级名称
+                  family:
+                    type: array
+                    description: 家庭成员（老师不用此字段）
+                    items:
+                      type: object
+                      properties:
+                        account_id:
+                          type: string
+                          description: 用户账号ID
+                        user_type_id:
+                          type: string
+                          description: 用户类型ID 
+                        school_id:
+                          type: string
+                          description: 用户学校ID
+                        username:
+                          type: string
+                          description: 用户名称
+                        class_name:
+                          type: string
+                          description: 用户所在班级                         
+
+
+  /api/common/stu/info:
+    post:
+      tags:
+        - Common
+      description: 获取某位学生基本信息
+      summary: 获取某位学生基本信息
+      parameters:
+        - name: account_id
+          in: formData
+          description: 用户账号ID,查自己则不填
+          type: string
+          required: false
+        - name: user_type_id
+          in: formData
+          description: 用户类型ID,查自己则不填
+          type: string
+          required: false
+        - name: school_id
+          in: formData
+          description: 学校ID,查自己则不填
+          type: string
+          required: false
+      responses:
+        "200":
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  stu_id:
+                    type: string
+                    description: 学生ID
+                  stu_name:
+                    type: string
+                    description: 学生名字
+                  clazz_id:
+                    type: string
+                    description: 班级ID
+                  clazz_name:
+                    type: string
+                    description: 班级名称
+
+
+  /api/common/class/student/list:
+    post:
+      tags:
+        - Common
+      description: 获取一个班级的所有学生（含家长信息）
+      summary: 获取一个班级的所有学生（含家长信息）
+      parameters:
+        - name: class_id 
+          in: formData
+          description: 班级ID
+          type: string
+          required: true
+      responses:
+        "200":
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    account_id:
+                      type: string
+                      description: 学生的账号ID
+                    user_type_id:
+                      type: string
+                      description: 用户类型                      
+                    school_id:
+                      type: string
+                      description: 学生所在学校ID                      
+                    name:
+                      type: string
+                      description: 学生姓名  
+                    avatar:
+                      type: string
+                      description: 头像                     
+                    stu_relate_parent:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          account_id:
+                            type: string
+                            description: 家长的账号ID
+                          user_type_id:
+                            type: string
+                            description: 用户类型                              
+                          school_id:
+                            type: string
+                            description: 家长所在学校ID                             
+                          name:
+                            type: string
+                            description: 家长姓名    
+                          avatar:
+                            type: string
+                            description: 头像                              
+ 
+
+  /api/common/school/class/list:
+    get:
+      tags:
+        - Common
+      description: 获取本校所有班级
+      summary: 获取本校所有班级
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: array
+                items:
+                  type: object
+                  description: 年级列表
+                  properties:
+                    grade_name:
+                      type: string
+                      description: 班级ID                      
+                    classes:
+                      type: array
+                      items:
+                        type: object
+                        description: 班级列表 
+                        properties:
+                          class_id:
+                            type: string
+                            description: 班级ID
+                          class_name:
+                            type: string
+                            description: 班级名称
+
+
+  /api/common/user/class/list:
+    get:
+      tags:
+        - Common
+      description: 获取本人所关联班级（该接口针对老师、学生、家长均有效）
+      summary: 获取本人所关联班级
+      responses:
+        "200":
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: array
+                items:
+                  type: object
+                  description: 班级列表
+                  properties:
+                    class_id:
+                      type: string
+                      description: 班级ID
+                    class_name:
+                      type: string
+                      description: 班级名称
+                    student_count:
+                      type: string
+                      description: 学生总数                     
+                    teacher_count:
+                      type: string
+                      description: 老师总数  
+                    parent_count:
+                      type: string
+                      description: 家长总数
+                    is_mentor:
+                      type: string
+                      description: 是否是班主任（针对老师有效）
+                    mentors:
+                      type: array
+                      description: 班主任列表
+                      items:
+                        type: object
+                        properties:
+                          account_id:
+                            type: string
+                            description: 用户账号ID
+                          user_type_id:
+                            type: string
+                            description: 用户类型ID 
+                          school_id:
+                            type: string
+                            description: 用户学校ID                            
+                          username:
+                            type: string
+                            description: 班主任姓名
+                         
+
+  /api/common/teachclass/add:
+    post:
+      tags:
+        - Common
+      description: 新增任教班级信息（用户中心远程调用）
+      summary: 新增任教班级信息（用户中心远程调用）
+      parameters:
+        - name: class_ids
+          in: formData
+          description: 待增加的班级ID,用逗号分隔
+          type: string
+          required: true             
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/result'
+
+
+  /api/common/teachclass/delete:
+    post:
+      tags:
+        - Common
+      description: 删除任教班级 （用户中心远程调用）
+      summary: 删除任教班级 （用户中心远程调用）
+      parameters:
+        - name: class_ids
+          in: formData
+          description: 班级ID,用逗号分隔ID
+          type: string
+          required: true 
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/result'
+
+
+  /api/common/upload/image:
+    post:
+      tags:
+        - Common
+      description: 上传一张图片
+      summary: 上传一张图片
+      parameters:
+        - name: image
+          in: formData
+          description: 图片文件
+          type: file
+          required: true
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  image_id:
+                    type: string
+                    description: 图片的ID
+                  image_name:
+                    type: string
+                    description: 图片的名称
+                  original_size:
+                    type: string
+                    description: 原图的大小
+                  original_image_url:
+                    type: string
+                    description: 原图的路径
+                  image_url:
+                    type: string
+                    description: 图片的路径
+                  image_crop_url:
+                    type: string
+                    description: 裁剪图的路径
+                  original_width:
+                    type: string
+                    description: 原图的长
+                  original_height:
+                    type: string
+                    description: 原图的宽
+
+
+  /api/common/upload/voice:
+    post:
+      tags:
+        - Common
+      description: 上传一个语音
+      summary: 上传一个语音
+      parameters:
+        - name: voice
+          in: formData
+          description: 语音文件
+          type: file
+          required: true
+        - name: duration
+          in: formData
+          description: 语音持续时长（秒）
+          type: string
+          required: false
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  voice_id:
+                    type: string
+                    description: 语音的ID
+                  voice_name:
+                    type: string
+                    description: 语音的名称
+                  voice_size:
+                    type: string
+                    description: 语音的大小
+                  voice_duration:
+                    type: string
+                    description: 语音的持续时长
+                  voice_url:
+                    type: string
+                    description: 语音的路径
+
+
+  /api/common/wx/voice/fetch:
+    post:
+      tags:
+        - Common
+      description: 从微信服务器下载语音
+      summary: 从微信服务器下载语音
+      parameters:
+        - name: media_id
+          in: formData
+          description: 微信语音ID
+          type: string
+          required: true
+        - name: duration
+          in: formData
+          description: 语音持续时长（秒）
+          type: string
+          required: false
+        - name: access_token
+          in: formData
+          description: access_token
+          type: string
+          required: false
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  voice_id:
+                    type: string
+                    description: 语音的ID
+                  voice_name:
+                    type: string
+                    description: 语音的名称
+                  voice_size:
+                    type: string
+                    description: 语音的大小
+                  voice_duration:
+                    type: string
+                    description: 语音的持续时长
+                  voice_url:
+                    type: string
+                    description: 语音的路径
+
+
+  /api/common/upload/video:
+    post:
+      tags:
+        - Common
+      description: 上传一个视频
+      summary: 上传一个视频
+      parameters:
+        - name: video
+          in: formData
+          description: 视频文件
+          type: file
+          required: true
+        - name: duration
+          in: formData
+          description: 视频持续时长（秒）
+          type: string
+          required: false
+        - name: width
+          in: formData
+          description: 视频宽度
+          type: string
+          required: false
+        - name: height
+          in: formData
+          description: 视频高度
+          type: string
+          required: false
+        - name: snapshot
+          in: formData
+          description: 视频截图
+          type: file
+          required: false
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  video_id:
+                    type: string
+                    description: 视频的ID
+                  video_name:
+                    type: string
+                    description: 视频的名称
+                  video_size:
+                    type: string
+                    description: 视频的大小
+                  video_duration:
+                    type: string
+                    description: 视频的持续时长
+                  video_width:
+                    type: string
+                    description: 视频的宽度
+                  video_height:
+                    type: string
+                    description: 视频的高度
+                  video_url:
+                    type: string
+                    description: 视频的路径
+
+
+  /api/common/upload/file:
+    post:
+      tags:
+        - Common
+      description: 上传一个附件
+      summary: 上传一个附件
+      parameters:
+        - name: file
+          in: formData
+          description: 附件文件
+          type: file
+          required: true
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  file_id:
+                    type: string
+                    description: 附件的ID
+                  file_url:
+                    type: string
+                    description: 附件的路径
+                  file_size:
+                    type: string
+                    description: 附件的大小
+                  file_name:
+                    type: string
+                    description: 附件的名称
+
+
+  /api/contacts/book/person:
+    get:
+      tags:
+        - Contacts
+      description: 获取当前用户的通讯录列表
+      summary: 获取当前用户的通讯录列表
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  teacher:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        account_id: 
+                          type: string
+                          description: 账号ID
+                        user_type_id: 
+                          type: string
+                          description: 用户类型ID
+                        school_id: 
+                          type: string
+                          description: 用户所在学校ID                            
+                        username: 
+                          type: string
+                          description: 用户名
+                        phone:
+                          type: string
+                          description: 手机号
+                        avatar:
+                          type: string
+                          description: 头像
+                  family:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        account_id: 
+                          type: string
+                          description: 账号ID
+                        user_type_id: 
+                          type: string
+                          description: 用户类型ID
+                        school_id: 
+                          type: string
+                          description: 用户所在学校ID                            
+                        username: 
+                          type: string
+                          description: 用户名
+                        phone:
+                          type: string
+                          description: 手机号
+                        avatar:
+                          type: string
+                          description: 头像
+                  student:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        is_mentor:
+                          type: string
+                          description: 是不是该班的班主任（仅对老师请求有效）
+                        class_id:
+                          type: string
+                          description: 账号ID  
+                        class_name:
+                          type: string
+                          description: 账号ID 
+                        students: 
+                          type: array
+                          description: 班里的所有学生
+                          items:
+                            type: object
+                            properties:
+                              account_id: 
+                                type: string
+                                description: 账号ID
+                              user_type_id: 
+                                type: string
+                                description: 用户类型ID
+                              school_id: 
+                                type: string
+                                description: 用户所在学校ID                        
+                              username: 
+                                type: string
+                                description: 用户名
+                              phone:
+                                type: string
+                                description: 手机号
+                              avatar:
+                                type: string
+                                description: 头像
+                              stu_relate_parent:
+                                type: array
+                                description: 关联家长
+                                items: 
+                                  type: object
+                                  properties:
+                                    account_id: 
+                                      type: string
+                                      description: 账号ID
+                                    user_type_id: 
+                                      type: string
+                                      description: 用户类型ID
+                                    user_type: 
+                                      type: string
+                                      description: 用户类型名称                   
+                                    school_id: 
+                                      type: string
+                                      description: 用户所在学校ID                
+                                    username: 
+                                      type: string
+                                      description: 用户名
+                                    phone:
+                                      type: string
+                                      description: 手机号
+                                    avatar:
+                                      type: string
+                                      description: 头像
+
+
+  /api/contacts/book/group:
+    get:
+      tags:
+        - Contacts
+      description: 获取当前登录用户的群组列表
+      summary: 获取当前登录用户的群组列表
+      responses:
+        "200":
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  class_grp:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        class_name:
+                          type: string
+                          description: 班级名称
+                        class_id:
+                          type: string
+                          description: 班级ID
+                        grp_type:
+                          type: string
+                          description: 群组类型
+                  created_grp:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        grp_name:
+                          type: string
+                          description: 群组名称
+                        grp_id:
+                          type: string
+                          description: 群组ID
+                        grp_type:
+                          type: string
+                          description: 群组类型
+                  joined_grp:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        grp_name:
+                          type: string
+                          description: 群组名称
+                        grp_id:
+                          type: string
+                          description: 群组ID
+                        grp_type:
+                          type: string
+                          description: 群组类型
+
+
+  /api/contacts/group/detail:
+    post:
+      tags:
+        - Contacts
+      description: 获取群组的基本信息
+      summary: 获取群组的基本信息
+      parameters:
+        - name: group_ids
+          in: formData
+          description: 群组IDs (用逗号分隔)
+          type: string
+          required: true
+      responses:
+        "200":
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    group_id:
+                      type: string
+                      description: 群ID
+                    group_status:
+                      type: string
+                      description: (已废弃)
+                    group_name:
+                      type: string
+                      description: 群名称
+                    member_count:
+                      type: string
+                      description: 群内人数
+                    account_id:
+                      type: string
+                      description: 创建者账号
+                    user_type:
+                      type: string
+                      description: 创建者类型
+                    school_id:
+                      type: string
+                      description: 创建者学校
+                    school_name:
+                      type: string
+                      description: 创建者学校名称
+                    username:
+                      type: string
+                      description: 创建者姓名
+                    avatar:
+                      type: string
+                      description: 创建者头像
+                    chat_id:
+                      type: string
+                      description: 群组环信ID  (已废弃)
+
+
+  /api/contacts/group/create:
+    post:
+      tags:
+        - Contacts
+      description: 创建群组
+      summary: 创建群组
+      parameters:
+        - name: group_name
+          in: formData
+          description: 群组名称
+          type: string
+          required: true
+        - name: invite_users
+          in: formData
+          description: 受邀用户列表(多个用户用;分隔, 每一个用户'账号ID','类型ID','学校ID')
+          type: string
+          required: true
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/result'
+
+
+  /api/contacts/group/edit:
+    post:
+      tags:
+        - Contacts
+      description: 修改群组名称
+      summary: 修改群组名称
+      parameters:
+        - name: group_id
+          in: formData
+          description: 群组ID
+          type: string
+          required: true
+        - name: group_name
+          in: formData
+          description: 群组名称
+          type: string
+          required: true
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/result'
+
+
+  /api/contacts/group/user/invite:
+    post:
+      tags:
+        - Contacts
+      description: 邀请用户加入群组
+      summary: 邀请用户加入群组
+      parameters:
+        - name: group_id
+          in: formData
+          description: 自定义群组ID
+          type: string
+          required: true
+        - name: invite_users
+          in: formData
+          description: 受邀用户列表(多个用户用;分隔, 每一个用户'账号ID','类型ID','学校ID')
+          type: string
+          required: true         
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/result'
+
+
+  /api/contacts/group/user/invite/available:
+    post:
+      tags:
+        - Contacts
+      description: 某群组尚可邀请的用户 【该接口已废弃，暂时保留方便前向兼容】
+      summary: 某群组尚可邀请的用户  【该接口已废弃，暂时保留方便前向兼容】
+      parameters:
+        - name: group_id
+          in: formData
+          description: 群组ID
+          type: string
+          required: true
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    account_id: 
+                      type: string
+                      description: 账号ID
+                    user_type_id: 
+                      type: string
+                      description: 用户类型ID
+                    school_id: 
+                      type: string
+                      description: 用户所在学校ID  
+                    desc:
+                      type: string
+                      description: 描述
+                    avatar:
+                      type: string
+                      description: 头像
+                    username: 
+                      type: string
+                      description: 用户名
+                    is_in:
+                      type: string
+                      description: 是否已经在群组中 在群组:1,不在群组:0
+                    stu_relate_parent:
+                      type: array
+                      description: 关联家长（仅当学生时有值）
+                      items: 
+                        type: object
+                        properties:
+                          account_id: 
+                            type: string
+                            description: 账号ID
+                          user_type_id: 
+                            type: string
+                            description: 用户类型ID
+                          school_id: 
+                            type: string
+                            description: 用户所在学校ID                
+                          username: 
+                            type: string
+                            description: 用户名
+                          desc:
+                            type: string
+                            description: 描述
+                          avatar:
+                            type: string
+                            description: 头像
+                          is_in:
+                            type: string
+                            description: 是否已经在群组中 在群组:1,不在群组:0
+
+
+  /api/v2/contacts/group/user/invite/available:
+    get:
+      tags:
+        - Contacts
+      description: 某群组尚可邀请的用户（新）
+      summary: 某群组尚可邀请的用户（新）
+      parameters:
+        - name: group_id
+          in: query
+          description: 群组ID
+          type: string
+          required: true
+      responses:
+        "200":
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  teacher:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        account_id:
+                          type: string
+                          description: 账号ID
+                        user_type_id:
+                          type: string
+                          description: 用户类型ID
+                        school_id:
+                          type: string
+                          description: 用户所在学校ID
+                        username:
+                          type: string
+                          description: 用户名
+                        phone:
+                          type: string
+                          description: 手机号
+                        avatar:
+                          type: string
+                          description: 头像
+                  family:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        account_id:
+                          type: string
+                          description: 账号ID
+                        user_type_id:
+                          type: string
+                          description: 用户类型ID
+                        school_id:
+                          type: string
+                          description: 用户所在学校ID
+                        username:
+                          type: string
+                          description: 用户名
+                        phone:
+                          type: string
+                          description: 手机号
+                        avatar:
+                          type: string
+                          description: 头像
+                  student:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        is_mentor:
+                          type: string
+                          description: 是不是该班的班主任（仅对老师请求有效）
+                        class_id:
+                          type: string
+                          description: 账号ID
+                        class_name:
+                          type: string
+                          description: 账号ID
+                        students:
+                          type: array
+                          description: 班里的所有学生
+                          items:
+                            type: object
+                            properties:
+                              account_id:
+                                type: string
+                                description: 账号ID
+                              user_type_id:
+                                type: string
+                                description: 用户类型ID
+                              school_id:
+                                type: string
+                                description: 用户所在学校ID
+                              username:
+                                type: string
+                                description: 用户名
+                              phone:
+                                type: string
+                                description: 手机号
+                              avatar:
+                                type: string
+                                description: 头像
+                              stu_relate_parent:
+                                type: array
+                                description: 关联家长
+                                items:
+                                  type: object
+                                  properties:
+                                    account_id:
+                                      type: string
+                                      description: 账号ID
+                                    user_type_id:
+                                      type: string
+                                      description: 用户类型ID
+                                    user_type:
+                                      type: string
+                                      description: 用户类型名称
+                                    school_id:
+                                      type: string
+                                      description: 用户所在学校ID
+                                    username:
+                                      type: string
+                                      description: 用户名
+                                    phone:
+                                      type: string
+                                      description: 手机号
+                                    avatar:
+                                      type: string
+                                      description: 头像
+
+
+  /api/contacts/class/user/list:
+    post:
+      tags:
+        - Contacts
+      description: 获取某班级现有用户列表(包含自己)
+      summary: 获取某班级现有用户列表(包含自己)
+      parameters:
+        - name: class_id
+          in: formData
+          description: 班级ID
+          type: string
+          required: true      
+      responses:
+        "200":
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    account_id: 
+                      type: string
+                      description: 账号ID
+                    user_type_id: 
+                      type: string
+                      description: 用户类型ID
+                    school_id: 
+                      type: string
+                      description: 用户所在学校ID  
+                    username: 
+                      type: string
+                      description: 用户名
+                    avatar:
+                      type: string
+                      description: 头像
+                    desc:
+                      type: string
+                      description: 描述（仅当家长时有值, x年级x班xxx的家长,可以多值）
+
+                            
+  /api/contacts/group/user/list:
+    post:
+      tags:
+        - Contacts
+      description: 获取某群组现有用户列表(包含自己)
+      summary: 获取某群组现有用户列表(包含自己)
+      parameters:
+        - name: group_id
+          in: formData
+          description: 群组ID
+          type: string
+          required: true      
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    account_id:
+                      type: string
+                      description: 账号ID
+                    user_type_id:
+                      type: string
+                      description: 用户类型ID
+                    school_id:
+                      type: string
+                      description: 用户所在学校ID
+                    username:
+                      type: string
+                      description: 用户名
+                    avatar:
+                      type: string
+                      description: 头像
+                    desc:
+                      type: string
+                      description: 描述（x年级x班xxx的家长,可以多值）
+                    is_creator: 
+                      type: string
+                      description: 是否是创建者（群主）
+     
+     
+  /api/contacts/group/user/delete:
+    post:
+      tags:
+        - Contacts
+      description: 从群组中删除多个用户
+      summary: 从群组中删除多个用户
+      parameters:
+        - name: group_id
+          in: formData
+          description: 群组ID
+          type: string
+          required: true
+        - name: delete_users
+          in: formData
+          description: 删除用户列表(多个用户用;分隔, 每一个用户'账号ID','类型ID','学校ID')
+          type: string
+          required: true
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/result'                    
+
+
+  /api/contacts/group/dissolve:
+    post:
+      tags:
+        - Contacts
+      description: 解散群组
+      summary: 解散群组
+      parameters:
+        - name: group_id
+          in: formData
+          description: 群组ID
+          type: string
+          required: true
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/result'
+
+
+  /api/moment/dynamics/showlist:
+    get:
+      tags:
+        - Moment
+      description: 获取圈子动态列表 - 用于班牌展示，无需登录，仅展示班级公开信息
+      summary: 获取圈子动态列表 - 用于班牌展示，无需登录，仅展示班级公开信息
+      parameters:
+        - name: class_id
+          in: query
+          description: 班级ID，选择班级圈的时候用
+          type: string
+          required: true
+        - name: last_id
+          in: query
+          description: 最后一个动态ID
+          type: string
+          required: false
+        - name: page
+          in: query
+          description: 页码，（最后一个动态ID与页码不允许同时存在）
+          type: string
+          required: false
+        - name: rows
+          in: query
+          description: 每页数量
+          type: string
+          required: false
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  list:
+                    type: array
+                    items:
+                      $ref: '#/definitions/dynamic'
+                  max_page:
+                    type: string
+                  total:
+                    type: string
+
+
+  /api/moment/dynamics/list:
+    get:
+      tags:
+        - Moment
+      description: 获取圈子动态列表
+      summary: 获取圈子动态列表
+      parameters:
+        - name: circle_type
+          in: query
+          description: 圈子类型，'0'表示最新动态，'1'表示学校圈，'2'表示班级圈，'3'表示个人动态
+          type: string
+          required: true
+        - name: moment_type
+          in: query
+          description: 动态类型, 多个用逗号分隔, 空表示查询全部, '0'照片，'1'视频，'2'附件，'3'投票，'4'奖章，'5'请假，'6'评价
+          type: string
+          required: false
+        - name: keyword
+          in: query
+          description: 搜索关键字
+          type: string
+          required: false
+        - name: time_scope
+          in: query
+          description: 时间范围.  0全部，1今日，2本周，3本月，6本学期
+          type: string
+          required: false
+        - name: account_id
+          in: query
+          description: 用户ID，当圈子类型为3时有效，如果为空则查自己的动态，非空则查他人动态
+          type: string
+          required: false 
+        - name: user_type
+          in: query
+          description: 用户类型，1：学生，2：老师，4：家长。当圈子类型为3时有效，
+          type: string
+          required: false
+        - name: school_id
+          in: query
+          description: 学校ID，当圈子类型为3时有效，
+          type: string
+          required: false
+        - name: class_id
+          in: query
+          description: 班级ID，选择班级圈的时候用
+          type: string
+          required: false
+        - name: last_id
+          in: query
+          description: 最后一个动态ID
+          type: string
+          required: false
+        - name: page
+          in: query
+          description: 页码，（最后一个动态ID与页码不允许同时存在）
+          type: string
+          required: false
+        - name: size
+          in: query
+          description: 每页数量 (已废弃，暂时保留保持旧版本兼容)
+          type: string
+          required: false
+        - name: rows
+          in: query
+          description: 每页数量
+          type: string
+          required: false
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  list:
+                    type: array
+                    items:
+                      $ref: '#/definitions/dynamic'
+                  max_page:
+                    type: string
+                  total:
+                    type: string
+
+
+  /api/moment/dynamics/detail:
+    get:
+      tags:
+        - Moment
+      description: 获取圈子动态详情
+      summary: 获取圈子动态详情
+      parameters:
+        - name: moment_id
+          in: query
+          description: 动态ID
+          type: string
+          required: true    
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                $ref: '#/definitions/dynamic'
+
+
+  /api/moment/dynamics/delete:
+    post:
+      tags:
+        - Moment
+      description: 删除圈子动态
+      summary: 删除圈子动态
+      parameters:
+        - name: moment_id
+          in: formData
+          description: 动态ID
+          type: string
+          required: true      
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/result'
+
+
+  /api/moment/dynamics/like:
+    post:
+      tags:
+        - Moment
+      description: 点赞圈子动态
+      summary: 点赞圈子动态
+      parameters:
+        - name: moment_id
+          in: formData
+          description: 动态ID
+          type: string
+          required: true      
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            $ref: '#/definitions/result'
+
+
+  /api/moment/dynamics/read:
+    post:
+      tags:
+        - Moment
+      description: 阅读圈子动态
+      summary: 阅读圈子动态
+      parameters:
+        - name: moment_id
+          in: formData
+          description: 动态ID
+          type: string
+          required: true      
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            $ref: '#/definitions/result'   
+
+
+  /api/moment/dynamics/reply:
+    post:
+      tags:
+        - Moment
+      description: 回复圈子动态
+      summary: 回复圈子动态
+      parameters:
+        - name: moment_id
+          in: formData
+          description: 动态ID
+          type: string
+          required: true  
+        - name: ref_id
+          in: formData
+          description: 被回复的评论ID
+          type: string
+          required: false
+        - name: content
+          in: formData
+          description: 评论内容
+          type: string
+          required: true
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                $ref: '#/definitions/reply'
+
+
+  /api/moment/dynamics/vote:
+    post:
+      tags:
+        - Moment
+      description: 投票圈子动态
+      summary: 投票圈子动态
+      parameters:
+        - name: vote_item_id
+          in: formData
+          description: 投票选择支ID
+          type: string
+          required: true
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            $ref: '#/definitions/result' 
+
+
+  /api/moment/dynamics/publish:
+    post:
+      tags:
+        - Moment
+      description: 发布圈子动态 【该接口已废弃，暂时保留方便前向兼容】
+      summary: 发布圈子动态 【该接口已废弃，暂时保留方便前向兼容】
+      parameters:
+        - name: content
+          in: formData
+          description: 动态文字内容
+          type: string
+          required: false  
+        - name: moment_type
+          in: formData
+          description: 动态类型 '0'照片，'1'视频，'2'附件，'3'投票
+          type: string
+          required: true
+        - name: voice_ids
+          in: formData
+          description: 临时语音ID列表,逗号隔开
+          type: string
+          required: false
+        - name: image_ids
+          in: formData
+          description: 临时图片ID列表,逗号隔开
+          type: string
+          required: false
+        - name: video_ids
+          in: formData
+          description: 临时视频ID列表,逗号隔开
+          type: string
+          required: false
+        - name: file_ids
+          in: formData
+          description: 临时文件ID列表,逗号隔开
+          type: string
+          required: false
+        - name: vote_title
+          in: formData
+          description: 投票主题
+          type: string
+          required: false
+        - name: vote_deadline
+          in: formData
+          description: 投票截止时间2017-02-28 08:58:18或1488767197或1488767197123时间戳
+          type: string
+          required: false
+        - name: branches
+          in: formData
+          description: 投票选择支，json数据[{"branch":"选项一", "sort":100},{"branch":"选项二", "sort":150}]
+          type: string
+          required: false
+        - name: is_publish_to_school
+          in: formData
+          description: 是否发布到学校圈, '0'代表不发布到学校, '1'代表发布到学校
+          type: string
+          required: false
+        - name: class_ids
+          in: formData
+          description: 发布到的班级ID列表,逗号隔开,不发班级圈就不传或者传None
+          type: string
+          required: false
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  list:
+                    type: array
+                    items:
+                      $ref: '#/definitions/dynamic'
+                  max_page:
+                    type: string
+                  total:
+                    type: string
+
+
+  /api/moment/dynamics/publish/basic:
+    post:
+      tags:
+        - Moment
+      description: 发布图片、视频、附件3类基础互动
+      summary: 发布图片、视频、附件3类基础互动
+      parameters:
+        - name: content
+          in: formData
+          description: 动态文字内容 [用户必填]
+          type: string
+          required: true
+        - name: moment_type
+          in: formData
+          description: 动态类型 '0'照片，'1'视频，'2'附件
+          type: string
+          required: true
+        - name: voice_ids
+          in: formData
+          description: 临时语音ID列表,逗号隔开
+          type: string
+          required: false
+        - name: image_ids
+          in: formData
+          description: 临时图片ID列表,逗号隔开
+          type: string
+          required: false
+        - name: video_ids
+          in: formData
+          description: 临时视频ID列表,逗号隔开
+          type: string
+          required: false
+        - name: file_ids
+          in: formData
+          description: 临时文件ID列表,逗号隔开
+          type: string
+          required: false
+        - name: is_publish_to_school
+          in: formData
+          description: 是否发布到学校圈, '0'代表不发布到学校, '1'代表发布到学校
+          type: string
+          required: false
+        - name: class_ids
+          in: formData
+          description: 发布到的班级ID列表, 逗号隔开, 不发班级圈就不传或者传None
+          type: string
+          required: false
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  list:
+                    type: array
+                    items:
+                      $ref: '#/definitions/dynamic'
+                  max_page:
+                    type: string
+                  total:
+                    type: string
+
+
+  /api/moment/dynamics/publish/dayoff:
+    post:
+      tags:
+        - Moment
+      description: 发布请假互动
+      summary: 发布请假互动
+      parameters:
+        - name: content
+          in: formData
+          description: 动态文字内容 [用户必填]
+          type: string
+          required: true
+        - name: voice_ids
+          in: formData
+          description: 临时语音ID列表,逗号隔开
+          type: string
+          required: false
+        - name: image_ids
+          in: formData
+          description: 临时图片ID列表,逗号隔开
+          type: string
+          required: false
+        - name: is_visible_for_teacher
+          in: formData
+          description: 仅教师可见, 1是, 0否, 默认是1
+          type: string
+          required: false
+        - name: class_ids
+          in: formData
+          description: 发布到的班级ID列表, 逗号隔开   [用户必填]
+          type: string
+          required: true
+      responses:
+        "200":
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  list:
+                    type: array
+                    items:
+                      $ref: '#/definitions/dynamic'
+                  max_page:
+                    type: string
+                  total:
+                    type: string
+
+
+  /api/moment/dynamics/publish/evaluate:
+    post:
+      tags:
+        - Moment
+      description: 发布评价互动
+      summary: 发布评价互动
+      parameters:
+        - name: content
+          in: formData
+          description: 动态文字内容  [用户必填]
+          type: string
+          required: true
+        - name: voice_ids
+          in: formData
+          description: 临时语音ID列表,逗号隔开
+          type: string
+          required: false
+        - name: image_ids
+          in: formData
+          description: 临时图片ID列表,逗号隔开
+          type: string
+          required: false
+        - name: evaluate_type
+          in: formData
+          description: 评价类型, 表扬1，批评2   [用户必填]
+          type: string
+          required: true
+        - name: evaluate_user_triples
+          in: formData
+          description: 评价对象的三元组列表，分号分隔，例如1,1,1;2,2,2;  [用户必填]
+          type: string
+          required: true
+        - name: evaluate_group_ids
+          in: formData
+          description: 评价群组ID列表,逗号分隔
+          type: string
+          required: false
+        - name: evaluate_class_ids
+          in: formData
+          description: 评价班级ID列表,逗号分隔
+          type: string
+          required: false
+        - name: is_visible_for_parent_related
+          in: formData
+          description: 仅相关家长可见  1是，0否， 默认是1
+          type: string
+          required: false
+        - name: class_ids
+          in: formData
+          description: 发布到的班级ID列表, 逗号隔开   [用户必填]
+          type: string
+          required: true
+      responses:
+        "200":
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  list:
+                    type: array
+                    items:
+                      $ref: '#/definitions/dynamic'
+                  max_page:
+                    type: string
+                  total:
+                    type: string
+
+
+  /api/moment/dynamics/publish/vote:
+    post:
+      tags:
+        - Moment
+      description: 发布投票互动
+      summary: 发布投票互动
+      parameters:
+        - name: content
+          in: formData
+          description: 动态文字内容  [用户必填]
+          type: string
+          required: true
+        - name: vote_title
+          in: formData
+          description: 投票主题  [用户必填]
+          type: string
+          required: true
+        - name: vote_deadline
+          in: formData
+          description: 投票截止时间 [用户必填], 2019-02-28 08:58:18或1488767197或1488767197123时间戳
+          type: string
+          required: true
+        - name: branches
+          in: formData
+          description: 投票选择支 [用户必填], json数据[{"branch":"选项一", "sort":100},{"branch":"选项二", "sort":150}]
+          type: string
+          required: true
+        - name: is_publish_to_school
+          in: formData
+          description: 是否发布到学校圈, '0'代表不发布到学校, '1'代表发布到学校
+          type: string
+          required: false
+        - name: class_ids
+          in: formData
+          description: 发布到的班级ID列表, 逗号隔开, 不发班级圈就不传或者传None
+          type: string
+          required: false
+      responses:
+        "200":
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  list:
+                    type: array
+                    items:
+                      $ref: '#/definitions/dynamic'
+                  max_page:
+                    type: string
+                  total:
+                    type: string
+
+
+  /api/notification/publish:
+    post:
+      tags:
+        - Notification
+      description: 发布家校通知
+      summary: 发布家校通知
+      parameters:
+        - name: content
+          in: formData
+          description: 通知正文
+          type: string
+          required: true
+        - name: file_ids
+          in: formData
+          description: 附件, ID列表用逗号分隔
+          type: string
+          required: false
+        - name: voice_ids
+          in: formData
+          description: 语音, ID列表用逗号分隔
+          type: string
+          required: false
+        - name: type
+          in: formData
+          description: 通知类型，班级通知1，作业通知2
+          type: string
+          required: true
+        - name: receivers
+          in: formData
+          description: 接收用户, 每一个收通知用户用“accountid”、“usertype”、“schoolid”三元组表示，多个用户用分号分隔，例如：1,1,1;2,2,2
+          type: string
+          required: true
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  notify_id:
+                    type: string
+                    description: 通知ID
+                  sender_username:
+                    type: string
+                    description: 用户姓名
+                  sender_account_id:
+                    type: string
+                    description: 用户账号ID
+                  sender_user_type:
+                    type: string
+                    description: 用户类型名称
+                  sender_school_id:
+                    type: string
+                    description: 用户所在学校ID
+                  sender_avatar:
+                    type: string
+                    description: 用户头像URL
+                  create_time:
+                    type: string
+                    description: 通知发送时间
+                  type:
+                    type: string
+                    description: 通知类型
+                  type_desc:
+                    type: string
+                    description: 通知类型 描述
+                  content:
+                    type: string
+                    description: 通知正文
+                  read_count:
+                    type: integer
+                    description: 通知被阅读次数
+                  files:
+                    type: array
+                    items:
+                      $ref: '#/definitions/document'
+
+
+  /api/notification/inbox:
+    get:
+      tags:
+        - Notification
+      description: 收件箱
+      summary: 收件箱
+      parameters:
+        - name: keyword
+          in: query
+          description: 搜索关键字
+          type: string
+          required: false
+        - name: last_id
+          in: query
+          description: 最后一条通知ID
+          type: string
+          required: false
+        - name: read_classify
+          in: query
+          description: 看未读还是已读消息, 已读1，未读0，多个用逗号分隔
+          type: string
+          required: false
+        - name: type_classify
+          in: query
+          description: 看哪一类消息, 班级通知1，作业通知2，多个用逗号分隔
+          type: string
+          required: false
+        - name: rows
+          in: query
+          description: 每页数量
+          type: string
+          required: false
+      responses:
+        "200":
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  data_list:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        notify_id:
+                          type: string
+                          description: 通知ID 
+                        sender_username:
+                          type: string
+                          description: 用户姓名
+                        sender_account_id:
+                          type: string
+                          description: 发信人accountID
+                        sender_user_type:
+                          type: string
+                          description: 发信人类型
+                        sender_school_id:
+                          type: string
+                          description: 发信人学校ID
+                        sender_avatar:
+                          type: string
+                          description: 用户头像URL
+                        create_time:
+                          type: string
+                          description: 通知发送时间
+                        type:
+                          type: string
+                          description: 通知类型
+                        type_desc:
+                          type: string
+                          description: 通知类型描述
+                        content:
+                          type: string
+                          description: 通知正文
+                        is_read:
+                          type: string
+                          description: 是否已读
+                        has_voice:
+                          type: string
+                          description: 是否包含语音
+                        has_file:
+                          type: string
+                          description: 是否包含附件
+                  max_page:
+                    type: integer
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+
+
+  /api/notification/outbox:
+    get:
+      tags:
+        - Notification
+      description: 发件箱
+      summary: 发件箱
+      parameters:
+        - name: keyword
+          in: query
+          description: 搜索关键字
+          type: string
+          required: false
+        - name: type_classify
+          in: query
+          description: 看哪一类消息, 班级通知1，作业通知2，多个用逗号分隔
+          type: string
+          required: false
+        - name: last_id
+          in: query
+          description: 最后一条通知ID
+          type: string
+          required: false
+        - name: rows
+          in: query
+          description: 每页数量
+          type: string
+          required: false
+      responses:
+        "200":
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  data_list:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        notify_id:
+                          type: string
+                          description: 通知ID
+                        has_voice:
+                          type: string
+                          description: 是否包含语音
+                        has_file:
+                          type: string
+                          description: 是否包含附件
+                        create_time:
+                          type: string
+                          description: 通知发送时间
+                        type:
+                          type: string
+                          description: 通知类型
+                        type_desc:
+                          type: string
+                          description: 通知类型描述
+                        content:
+                          type: string
+                          description: 通知正文
+                        receiver_brief:
+                          type: string
+                          description: 通知接收者缩略
+                  max_page:
+                    type: integer
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+
+
+  /api/notification/detail:
+    get:
+      tags:
+        - Notification
+      description: 通知详情
+      summary: 通知详情
+      parameters:
+        - name: notify_id
+          in: query
+          description: 通知ID 
+          type: string
+          required: true
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  notify_id:
+                    type: string
+                    description: 通知ID 
+                  sender_username:
+                    type: string
+                    description: 用户姓名
+                  sender_account_id:
+                    type: string
+                    description: 用户账号ID
+                  sender_user_type:
+                    type: string
+                    description: 用户类型名称                           
+                  sender_school_id:
+                    type: string
+                    description: 用户所在学校ID
+                  sender_avatar:
+                    type: string
+                    description: 用户头像URL
+                  receiver_brief:
+                    type: string
+                    description: 收件人缩略表示
+                  create_time:
+                    type: string
+                    description: 通知发送时间
+                  type:
+                    type: string
+                    description: 通知类型
+                  type_desc:
+                    type: string
+                    description: 通知类型 描述
+                  content:
+                    type: string
+                    description: 通知正文
+                  read_count:
+                    type: integer
+                    description: 通知被阅读次数
+                  files:
+                    type: array
+                    items:
+                      $ref: '#/definitions/document'
+                  voices:
+                    type: array
+                    items:
+                      $ref: '#/definitions/voice'
+
+
+  /api/notification/read/list:
+    get:
+      tags:
+        - Notification
+      description: 阅读情况列表
+      summary: 阅读情况列表
+      parameters:
+        - name: notify_id
+          in: query
+          description: 通知ID
+          type: string
+          required: true
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  who_read:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        account_id:
+                          type: string
+                          description: 用户accountID
+                        user_type:
+                          type: string
+                          description: 用户类型
+                        school_id:
+                          type: string
+                          description: 用户学校
+                        username:
+                          type: string
+                          description: 用户姓名
+                        avatar:
+                          type: string
+                          description: 用户头像
+                  who_unread:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        account_id:
+                          type: string
+                          description: 用户accountID
+                        user_type:
+                          type: string
+                          description: 用户类型
+                        school_id:
+                          type: string
+                          description: 用户学校
+                        username:
+                          type: string
+                          description: 用户姓名
+                        avatar:
+                          type: string
+                          description: 用户头像
+
+
+  /api/notification/receiver/detail:
+    get:
+      tags:
+        - Notification
+      description: 获取通知接收者姓名列表
+      summary: 获取通知接收者姓名列表
+      parameters:
+        - name: notify_id
+          in: query
+          description: 通知ID 
+          type: string
+          required: true
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            type: object
+            properties:
+              c:
+                type: integer
+              m:
+                type: string
+              d:
+                type: object
+                properties:
+                  name_list:
+                    type: array
+                    items:
+                      type: string
+                      description: 用户姓名
+
+
+  /api/notification/outbox/delete:
+    post:
+      tags:
+        - Notification
+      description: 从发件箱删除通知，删除后所有人不可见
+      summary: 从发件箱删除通知，删除后所有人不可见
+      parameters:
+        - name: notify_ids
+          in: formData
+          description: 通知ID列表,用逗号分隔
+          type: string
+          required: true      
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            $ref: '#/definitions/result'
+
+
+  /api/notification/inbox/delete:
+    post:
+      tags:
+        - Notification
+      description: 从收件箱删除通知
+      summary: 从收件箱删除通知
+      parameters:
+        - name: notify_ids
+          in: formData
+          description: 通知ID列表,用逗号分隔
+          type: string
+          required: true
+        - name: is_clean_all
+          in: formData
+          description: 是否清空所有，1是，0否，不填默认是0
+          type: string
+          required: false
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/result'
+
+
+  /api/notification/read:
+    post:
+      tags:
+        - Notification
+      description: 阅读通知或标记通知为已读
+      summary: 阅读通知或标记通知为已读
+      parameters:
+        - name: notify_ids
+          in: formData
+          description: 通知ID列表,用逗号分隔
+          type: string
+          required: true      
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            $ref: '#/definitions/result'                        
+
+
+  /api/notification/unread:
+    post:
+      tags:
+        - Notification
+      description: 标记通知为未读
+      summary: 标记通知为未读
+      parameters:
+        - name: receive_ids
+          in: formData
+          description: 通知ID列表,用逗号分隔
+          type: string
+          required: true      
+      responses:
+        "200":
+          description: 成功结果
+          schema:
+            $ref: '#/definitions/result'                  
+
+
+  /api/notification/remind:
+    post:
+      tags:
+        - Notification
+      description: 发消息提醒未读的人
+      summary: 发消息提醒未读的人
+      parameters:
+        - name: notify_id
+          in: formData
+          description: 通知ID
+          type: string
+          required: true
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/result'
+
+
+definitions:
+
+  result: 
+    description: 成功操作返回内容
+    type: object
+    properties:
+      c:
+        type: integer
+        description: 响应码
+      m:
+        type: string
+        description: 响应消息提示
+        
+  document:
+    description: 上传的文件
+    type: object
+    properties:
+      file_id:
+        type: string
+        description: 文件ID
+      file_name:
+        type: string
+        description: 文件名称
+      file_size:
+        type: string
+        description: 文件大小
+      file_url:
+        type: string
+        description: 文件地址URL
+      file_url_with_fname:
+        type: string
+        description: 文件地址URL(附带文件名)
+      file_type:
+        type: string
+        description: 文件类型
+     
+  image: 
+    description: 上传的图片
+    type: object
+    properties:
+      image_id:
+        type: string
+        description: 图片ID
+      image_name:
+        type: string
+        description: 图片名称
+      image_size:
+        type: string
+        description: 图片大小
+      image_square:
+        type: string
+        description: 图片长宽
+      image_original_url:
+        type: string
+        description: 原始图片地址URL
+      image_thumb_url:
+        type: string
+        description: 传输图片地址URL
+      image_crop_url:
+        type: string
+        description: 裁剪后图片地址URL
+      image_type:
+        type: string
+        description: 图片类型
+      image_width:
+        type: string
+        description: 图片宽度
+      image_hight:
+        type: string
+        description: 图片高度
+        
+  voice: 
+    description: 上传的语音
+    type: object
+    properties:
+      voice_id:
+        type: string
+        description: 语音ID
+      voice_name:
+        type: string
+        description: 语音名称
+      voice_size:
+        type: string
+        description: 语音大小
+      voice_duration:
+        type: string
+        description: 语音时长
+      voice_type:
+        type: string
+        description: 语音类型
+      voice_url:
+        type: string
+        description: 语音地址URL
+      voice_converted_url:
+        type: string
+        description: 转换后的语音地址URL
+      voice_converted_status:
+        type: string
+        description: 转换状态
+        
+  video:
+    description: 上传的视频
+    type: object
+    properties:
+      video_id:
+        type: string
+        description: 视频ID
+      video_name:
+        type: string
+        description: 视频名称
+      video_size:
+        type: string
+        description: 视频大小
+      video_duration:
+        type: string
+        description: 视频时长
+      video_url:
+        type: string
+        description: 视频原始地址URL
+      video_converted_url:
+        type: string
+        description: 转码后的地址URL
+      video_converted_status:
+        type: string
+        description: 转码状态
+      video_cover_url:
+        type: string
+        description: 视频封面URL
+      video_square:
+        type: string
+        description: 视频长宽
+      video_type:
+        type: string
+        description: 视频类型
+      video_width:
+        type: string
+        description: 视频宽度
+      video_hight:
+        type: string
+        description: 视频高度
+
+  dynamic: 
+    description: 圈子动态
+    type: object
+    properties:
+      moment_id:
+        type: string
+        description: 动态ID 
+      username:
+        type: string
+        description: 用户姓名
+      account_id:
+        type: string
+        description: 用户账号ID                    
+      user_type_id:
+        type: string
+        description: 用户类型ID
+      moment_type:
+        type: string
+        description: 动态类型. '0'照片，'1'视频，'2'附件，'3'投票，'4'奖章，'5'请假，'6'评价
+      user_type:
+        type: string
+        description: 用户类型名称                           
+      school_id: 
+        type: string
+        description: 用户所在学校ID
+      avatar:
+        type: string
+        description: 用户头像URL   
+      sex:
+        type: string
+        description: 用户性别   
+      class:
+        type: string
+        description: 班级名称
+      create_time:
+          type: string
+          description: 动态创建时间
+      create_time_perform:
+          type: string
+          description: 动态创建时间(用于前端展示)
+      content:
+          type: string
+          description: 动态文字内容
+      read_count:
+          type: string
+          description: 动态被浏览次数  
+      like_count:
+          type: string
+          description: 动态被赞次数
+      is_like:
+          type: string
+          description: 自己是否已为动态点赞，'0'表示未点赞，'1'表示已点赞        
+      reply_count:
+          type: string
+          description: 动态被回复次数 
+      has_voice:
+          type: string
+          description: 是否包含语音
+      has_image:
+          type: string
+          description: 是否包含照片
+      has_video:
+          type: string
+          description: 是否包含视频
+      has_file:
+          type: string
+          description: 是否包含附件
+      append_attr:
+          type: string
+          description: 附加属性
+      voices:
+          type: array
+          items:
+            $ref: '#/definitions/voice'
+      images:
+        type: array
+        items:
+          $ref: '#/definitions/image'
+      videos:
+          type: array
+          items:
+            $ref: '#/definitions/video'
+      files:
+        type: array
+        items:
+          $ref: '#/definitions/document'
+      vote:
+        type: object
+        properties:
+          vote_title:
+            type: string
+            description: 投票主题
+          vote_num:
+            type: string
+            description: 多选个数
+          vote_deadline:
+            type: string
+            description: 投票截止时间
+          vote_statistics:
+            type: string
+            description: 投票次数统计
+          vote_items:
+            type: array
+            items:
+              type: object
+              properties:
+                vote_item_id:
+                  type: string
+                  description: 投票选择支ID
+                branch:
+                  type: string
+                  description: 投票选择支
+                count:
+                  type: string
+                  description: 被选择次数
+                isvote:
+                  type: string
+                  description: 当前用户已投此项,'0'未投,'1'已投
+      is_vote:
+        type: string
+        description: 自己是否已投票，'0'表示未投票或者非投票动态，'1'表示已投票
+      is_voteexpire:
+        type: string
+        description: 投票是否已过期，'0'表示未过期或者非投票动态，'1'表示已过期
+      evaluate:
+        type: object
+        properties:
+          type:
+            type: string
+            description: 表扬还是批评 (1表扬  2批评)
+          is_visible_for_parent_related:
+            type: string
+            description: 仅相关家长可见 (1是  0否)
+          students:
+            type: string
+            description: 涉及学生名字
+      dayoff:
+        type: object
+        properties:
+          is_visible_for_teacher:
+            type: string
+            description: 仅相关老师可见 (1是  0否)
+      like:
+        type: array
+        items:
+          type: object
+          properties:
+            account_id:
+              type: string
+              description: 用户账号ID
+            user_type: 
+              type: string
+              description: 用户类型名称                           
+            school_id: 
+              type: string
+              description: 用户所在学校ID
+            username:
+              type: string
+              description: 用户姓名
+      reply:
+        type: array
+        items:
+          type: object
+          properties:
+            reply_id:
+              type: string
+              description: 评论ID
+            account_id:
+              type: string
+              description: 用户账号ID
+            user_type:
+              type: string
+              description: 用户类型名称                           
+            school_id: 
+              type: string
+              description: 用户所在学校ID
+            username:
+              type: string
+              description: 用户姓名
+            content:
+              type: string
+              description: 评论内容
+            ref:
+              type: object
+              properties:
+                ref_id:
+                  type: string
+                  description: 被回复的评论ID                
+                account_id:
+                  type: string
+                  description: 用户账号ID
+                user_type: 
+                  type: string
+                  description: 用户类型名称                           
+                school_id: 
+                  type: string
+                  description: 用户所在学校ID
+                username:
+                  type: string
+                  description: 用户姓名
+
+  reply:
+    description: 圈子动态
+    type: object
+    properties:
+      reply_id:
+        type: string
+        description: 评论ID
+      account_id:
+        type: string
+        description: 用户账号ID
+      user_type:
+        type: string
+        description: 用户类型名称
+      school_id:
+        type: string
+        description: 用户所在学校ID
+      username:
+        type: string
+        description: 用户姓名
+      content:
+        type: string
+        description: 评论内容
+      ref:
+        type: object
+        properties:
+          ref_id:
+            type: string
+            description: 被回复的评论ID
+          account_id:
+            type: string
+            description: 用户账号ID
+          user_type:
+            type: string
+            description: 用户类型名称
+          school_id:
+            type: string
+            description: 用户所在学校ID
+          username:
+            type: string
+            description: 用户姓名
+
+  msg:
+    description: 一条消息定义
+    type: object
+    properties:
+      id:
+        type: string
+        description: 消息ID
+      timestamp:
+        type: string
+        description: 消息时间
+      channel_code:
+        type: string
+        description: 频道代码
+      channel_name:
+        type: string
+        description: 频道名称
+      category_code:
+        type: string
+        description: 消息类型代码
+      category_name:
+        type: string
+        description: 消息类型名称
+      tag:
+        type: string
+        description: 消息标签
+      is_read:
+        type: string
+        description: 消息是否已读（1已读0未读）
+      is_push:
+        type: string
+        description: 消息是否已推送（1已推送0未推送）
+      content:
+        type: string
+        description: 消息体
+      service_url:
+        type: string
+        description: 消息所在服务的地址
+
+  student_info:
+    type: object
+    properties:
+      id:
+        type: string
+      account_id:
+        type: string
+      username:
+        type: string
+      password:
+        type: string
+      full_name: #姓名
+        type: string
+      id_card: #身份证号
+        type: string
+      code: #学籍号
+        type: string
+      tmp_code: #学籍号
+        type: string
+      sex:
+        type: string
+      mobile:
+        type: string
+      email:
+        type: string
+      address:
+        type: string
+      class_name:
+        type: string
+      class_id:
+        type: string
+      grade_name:
+        type: string
+      entry_date:
+        type: string
+      out_date:
+        type: string
+      is_in:
+        type: string
+      kind:
+        type: string
+      comments:
+        type: string
+      image_url:
+        type: string
+      birthday:
+        type: string
+      native_place:
+        type: string
+
+  teacher_info:
+    type: object
+    properties:
+      id:
+        type: string
+      username:
+        type: string
+      full_name:
+         type: string
+      id_card:
+        type: string
+      school_code:
+        type: string
+      tmp_code:
+        type: string
+      cls_id:
+        type: string
+      class_name:
+        type: string
+      sex:
+        type: string
+      mobile:
+        type: string
+      email:
+        type: string
+      address:
+        type: string
+      kind:
+        type: string
+      is_in:
+        type: string
+      is_available:
+        type: string
+      in_date:
+        type: string
+      out_date:
+        type: string
+      comments:
+        type: string
+      image_url:
+        type: string
+      title:
+        type: string
+      birthday:
+        type: string
+      native_place:
+        type: string
+
+  parent_info:
+    type: object
+    properties:
+      id:
+        type: string
+      account_id:
+        type: string
+      username:
+        type: string
+      password:
+        type: string
+      id_card:
+        type: string
+      full_name: #姓名
+        type: string
+      sex:
+        type: string
+      email:
+        type: string
+      mobile:
+        type: string
+      address:
+        type: string
+      company:
+        type: string
+      image_url:
+        type: string
+      birthday:
+        type: string
+      native_place:
+        type: string
+      children:
+        type: array
+        items:
+          type: object
+          properties:
+            student_id:
+              type: string
+            student_full_name:
+              type: string
+            student_code:
+              type: string
+            relation:
+              type: string
+            comments:
+              type: string
+                          
+                          
+                      
+                  
+                
+                
+                
+        
+        

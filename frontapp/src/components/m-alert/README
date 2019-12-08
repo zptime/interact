@@ -1,0 +1,8 @@
+1.依赖 Clipboard 用于复制，使用npm install --save Clipboard 安装
+2.依赖vux的Confirm实现弹出功能。
+
+属性：
+1.needPasedTxt：外界赋值的，用于复制的文案
+
+2.show：控制视图显隐的bool值
+

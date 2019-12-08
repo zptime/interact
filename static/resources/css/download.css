@@ -1,0 +1,125 @@
+@charset "utf-8";
+/*reset*/
+html,body,h1,h2,h3,h4,h5,h6,div,dl,dt,dd,ul,ol,li,p,blockquote,pre,hr,
+figure,table,caption,th,td,form,fieldset,legend,input,button,textarea,
+menu,header,img,section{margin: 0;padding: 0;}
+
+header,footer,section,article,aside,nav,hgroup,address,
+figure,figcaption,menu,details {display: block;}
+
+body,button, input,
+select, textarea  { font-size: 14px; font-family: "Microsoft YaHei", Helvetica, STHeiti STXihei, Microsoft JhengHei,Microsoft YaHei, Tohoma, Arial; }
+button, input, select, textarea {
+    font-family: inherit;
+    font-size: 100%;
+    margin: 0;
+    box-sizing: border-box;
+    padding: 0;
+    vertical-align: baseline;
+}
+
+textarea {
+    resize: none;
+    overflow: auto;
+    vertical-align: top;
+}
+input,
+button,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+a{text-decoration: none;}
+a:hover { text-decoration: none; }
+
+i,em,address, cite, dfn, em, var{
+    font-style: normal;
+}
+
+img{
+    border: none;
+    outline: none;
+}
+
+table{
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+h1,h2,h3,h4,h5 {
+    font-weight: 400;
+}
+
+ul,li{
+    list-style: none;
+    }
+
+
+html,body{
+	 min-height: 100%;
+	 height: 100%;
+	 width:100%;
+     font-size: 13px;
+}
+.img {
+    vertical-align: middle;
+}
+.fl{
+	float: left;
+}
+.fr{
+	float: right;
+}
+.clear { zoom:1;}
+.clear:after { content: '';display: block;clear:both;}
+strong{
+    font-weight: normal;
+}
+.text-center {
+	text-align: center;
+}
+.text-right {
+	text-align: right;
+}
+.text-left {
+	text-align: left!important;
+}
+.font-weight {
+	font-weight: 700;
+}
+.ml20 {margin-left: 20px;}
+
+.L_header {
+    height: 80px;
+    background-color: #2fcde5;
+}
+.L_logo {
+	line-height: 80px;
+	text-align: center;
+}
+.L_logo img {
+	vertical-align: middle;
+}
+.erweima {
+	width: 100%;
+	margin: 10% auto 0;
+	text-align: center;
+}
+.erweima .erweima-img {
+	display: block;
+}
+.soup {
+	color: #999;
+	/*font-size: 1.3rem;*/
+	font-size: x-large;
+	padding-top: 25px;
+	display: block;
+}
+.soup:hover {
+	color: #2FCDE5;
+	font-size: x-large;
+	text-decoration: underline;
+}

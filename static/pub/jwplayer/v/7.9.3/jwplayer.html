@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="jwplayer.js"></script>
+    <script>jwplayer.key="iD8T9rqoBIQ43PI9cgRpPOGBuGbtYaEvDpN+Og==";</script>
+    <title></title>
+
+</head>
+<body>
+     <div style="width:800px; height:600px" >
+
+    <div id = "container">Loadingthe player ...</div>
+     </div>
+       <script>
+        window.onload = function () {
+            var queryString = document.location.search.substring(1);
+            var params = parseQueryString(queryString);
+            var file = 'file' in params ? params.file : '';
+            jwplayer("container").setup({
+                  file: file,
+                  width: "800px",
+                  height: "600px",
+                  stretching: "bestfit",
+            });
+        };
+        function parseQueryString(query) {
+          var parts = query.split('&');
+          var params = {};
+          for (var i = 0, ii = parts.length; i < ii; ++i) {
+            var param = parts[i].split('=');
+            var key = param[0].toLowerCase();
+            var value = param.length > 1 ? param[1] : null;
+            params[decodeURIComponent(key)] = decodeURIComponent(value);
+          }
+          return params;
+        }
+    </script>
+</body>
+</html>

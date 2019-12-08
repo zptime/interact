@@ -1,0 +1,2 @@
+0 3 * * * . /opt/virt/interact/bin/activate && python /opt/virt/interact/interact/manage.py clearsessions
+0 1 * * * . /opt/virt/interact/bin/activate && python /opt/virt/interact/interact/manage.py uploadlog

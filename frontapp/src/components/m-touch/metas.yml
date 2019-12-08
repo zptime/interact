@@ -1,0 +1,47 @@
+icon: '&#xe63b;'
+tags:
+  zh-CN:
+    - 悬浮图标
+    - 随底部页面而上滑消失，下滑出现
+data:
+ direction:
+    type: Number
+    default: 0
+    zh-CN: 列表滑动方向，1：向上，2：向下，3：向左，4：向右,0：未滑动
+props:
+  show:
+    type: Boolean
+    default: true
+    zh-CN: "是否显示图标"
+  scroll:
+    type: Boolean
+    default: true
+    zh-CN: "图标是否随底部页面的滚动而隐藏和出现"
+  btnSecStyle:
+    type: Object
+    zh-CN: "图标样式设置，可自定义"
+  imgSecStyle:
+    type: Object
+    zh-CN: "图标内图片样式设置，可自定义"
+events:
+  on-click:
+    zh-CN: 点击图标时触发
+  on-change:
+    params: '`(value)`'
+    zh-CN: 返回底部页面滑动方向
+slots:
+  image:
+    zh-CN: 自定义图标内图片
+methods:
+  setShow:
+    zh-CN: 显示图标
+  setHide:
+    zh-CN: 隐藏图标
+changes:
+  v1.0.0:
+    zh-CN:
+      - '悬浮图标'
+
+使用举例：
+import MTouch from '../../components/m-touch/index.vue'
+<m-touch ref="childTouch" @on-click="goPublish"></m-touch>
